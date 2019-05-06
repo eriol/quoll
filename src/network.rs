@@ -5,6 +5,8 @@ use std::net::UdpSocket;
 use std::result;
 use std::sync::{Arc, RwLock};
 
+use log::debug;
+
 use errors::UDPServerError;
 
 // Maximum buffer size for commands.
@@ -46,12 +48,11 @@ impl<'a> SimpleUDPServer<'a> {
         match self.socket.as_ref() {
             Some(socket) => match socket {
                 Ok(socket) => {
-                    let (bytes, src_addr) = socket.recv_from(&mut buf)?;
+                    let (bytes, src) = socket.recv_from(&mut buf)?;
                     let mut command = self.command.write()?;
                     *command = String::from_utf8(buf[..bytes].to_vec())?;
 
-                    println!("{:?}", src_addr);
-                    println!("In recv udp {:?}", *command);
+                    debug!("Received command '{}' from {}", *command, src);
 
                     Ok(())
                 }
