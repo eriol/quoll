@@ -1,5 +1,5 @@
 [package]
-name = "dotted"
+name = "quoll"
 version = "0.1.0"
 authors = ["Daniele Tricoli <eriol@mornie.org>"]
 edition = "2018"
