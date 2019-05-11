@@ -7,6 +7,7 @@ use std::sync::{Arc, RwLock};
 
 use log::debug;
 
+use super::commands::Command;
 use errors::UDPServerError;
 
 // Maximum buffer size for commands.
@@ -24,13 +25,13 @@ pub type Result<'a, T> = result::Result<T, UDPServerError<'a>>;
 // Commands that excede MAX_BUF_SIZE are simply truncated.
 pub struct SimpleUDPServer<'a> {
     address: &'a str,
-    command: Arc<RwLock<String>>,
+    command: Arc<RwLock<Command>>,
     socket: Option<io::Result<UdpSocket>>,
 }
 
 impl<'a> SimpleUDPServer<'a> {
     /// Create a new server.
-    pub fn new(address: &'a str, command: Arc<RwLock<String>>) -> Self {
+    pub fn new(address: &'a str, command: Arc<RwLock<Command>>) -> Self {
         SimpleUDPServer {
             address,
             command,
@@ -50,7 +51,9 @@ impl<'a> SimpleUDPServer<'a> {
                 Ok(socket) => {
                     let (bytes, src) = socket.recv_from(&mut buf)?;
                     let mut command = self.command.write()?;
-                    *command = String::from_utf8(buf[..bytes].to_vec())?;
+                    *command = Command::from(String::from_utf8(
+                        buf[..bytes].to_vec(),
+                    )?);
 
                     debug!("Received command '{}' from {}", *command, src);
 

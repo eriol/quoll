@@ -3,6 +3,8 @@ use std::io;
 use std::string;
 use std::sync;
 
+use crate::commands::Command;
+
 // Aggregate all kind of different errors for SimpleUDPServer.
 #[derive(Debug)]
 pub struct UDPServerError<'a> {
@@ -23,11 +25,11 @@ impl<'a> From<io::Error> for UDPServerError<'a> {
     }
 }
 
-impl<'a> From<sync::PoisonError<sync::RwLockWriteGuard<'a, String>>>
+impl<'a> From<sync::PoisonError<sync::RwLockWriteGuard<'a, Command>>>
     for UDPServerError<'a>
 {
     fn from(
-        err: sync::PoisonError<sync::RwLockWriteGuard<'a, String>>,
+        err: sync::PoisonError<sync::RwLockWriteGuard<'a, Command>>,
     ) -> UDPServerError {
         UDPServerError {
             detail: ErrorDetail::PoisonError(err),
@@ -46,7 +48,7 @@ impl<'a> From<string::FromUtf8Error> for UDPServerError<'a> {
 #[derive(Debug)]
 enum ErrorDetail<'a> {
     IOError(io::Error),
-    PoisonError(sync::PoisonError<sync::RwLockWriteGuard<'a, String>>),
+    PoisonError(sync::PoisonError<sync::RwLockWriteGuard<'a, Command>>),
     FromUtf8Error(string::FromUtf8Error),
 }
 

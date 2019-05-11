@@ -1,3 +1,5 @@
+use std::fmt;
+
 // A command can tell us to quit the application (Command::Quit) or to change
 // the displayed icon using the associated String to find what we have to
 // display.
@@ -17,6 +19,12 @@ where
         } else {
             Command::Custom(String::from(s.as_ref()))
         }
+    }
+}
+
+impl fmt::Display for Command {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}", self)
     }
 }
 
