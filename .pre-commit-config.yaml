@@ -8,3 +8,7 @@ repos:
     -   id: check-merge-conflict
     -   id: end-of-file-fixer
     -   id: trailing-whitespace
+-   repo: https://github.com/Jason3S/cspell
+    rev: v3.2.10
+    hooks:
+    -   id: cspell
