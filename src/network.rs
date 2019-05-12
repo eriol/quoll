@@ -19,19 +19,19 @@ const MAX_BUF_SIZE: usize = 26;
 
 pub type Result<'a, T> = result::Result<T, UDPServerError<'a>>;
 
-// A simple server listening on UDP.
-//
-// The server receives commands as String, with a max len of MAX_BUF_SIZE.
-// Commands that excede MAX_BUF_SIZE are simply truncated.
-pub struct SimpleUDPServer<'a> {
-    address: &'a str,
+/// A simple server listening on UDP.
+///
+/// The server receives commands as String, with a max len of MAX_BUF_SIZE.
+/// Commands that exceed MAX_BUF_SIZE are simply truncated.
+pub struct SimpleUDPServer {
+    address: String,
     command: Arc<RwLock<Command>>,
     socket: Option<io::Result<UdpSocket>>,
 }
 
-impl<'a> SimpleUDPServer<'a> {
+impl SimpleUDPServer {
     /// Create a new server.
-    pub fn new(address: &'a str, command: Arc<RwLock<Command>>) -> Self {
+    pub fn new(address: String, command: Arc<RwLock<Command>>) -> Self {
         SimpleUDPServer {
             address,
             command,
@@ -73,7 +73,7 @@ impl<'a> SimpleUDPServer<'a> {
         }
     }
 
-    //
+    /// Listen forever for incoming commands.
     pub fn serve_forever(&mut self) -> Result<()> {
         self.bind();
         loop {
