@@ -2,9 +2,10 @@ use std::fmt;
 use std::path::PathBuf;
 
 use home::home_dir;
+use log::warn;
 
 const QUOLL_HOME: &str = ".quoll";
-const DEFAULT_COMMAND_EXTENSION: &str = "png";
+const COMMAND_EXTENSIONS: [&str; 2] = ["svg", "png"];
 
 /// A command can tell us to quit the application (Command::Quit) or to change
 /// the displayed icon using the associated String to find what we have to
@@ -16,7 +17,8 @@ pub enum Command {
 }
 
 impl Command {
-    /// Return the `Command` as path.
+    /// Return the path of the icon that correspond to a `Command` if the
+    /// icon exists, None otherwise.
     pub fn to_path(&self) -> Option<PathBuf> {
         match self {
             Command::Quit => None,
@@ -24,8 +26,14 @@ impl Command {
                 let mut home = home_dir()?;
                 home.push(QUOLL_HOME);
                 home.push(c);
-                home.set_extension(DEFAULT_COMMAND_EXTENSION);
-                Some(home)
+                for ext in &COMMAND_EXTENSIONS {
+                    home.set_extension(ext);
+                    if home.exists() {
+                        return Some(home);
+                    }
+                }
+                warn!("{} doesn't exist", home.display());
+                None
             }
         }
     }
@@ -67,5 +75,5 @@ fn commands_to_path() {
     let mut home = home_dir().unwrap();
     home.push(QUOLL_HOME);
     home.push("eriol.png");
-    assert_eq!(Command::from("eriol").to_path(), Some(home));
+    assert_eq!(Command::from("eriol").to_path(), None);
 }
