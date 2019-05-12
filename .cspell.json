@@ -6,5 +6,5 @@
     "dictionaryDefinitions": [
         { "name": "quoll", "path": ".quoll.txt"}
     ],
-    "ignorePaths": ["Cargo.lock"]
+    "ignorePaths": ["Cargo.lock", "resources/*.svg"]
 }
