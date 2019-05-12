@@ -1,0 +1,9 @@
+{
+    "version": "0.1",
+    "language": "en",
+    // quoll specific words.
+    "dictionaries": ["quoll"],
+    "dictionaryDefinitions": [
+        { "name": "quoll", "path": ".quoll.txt"}
+    ]
+}
