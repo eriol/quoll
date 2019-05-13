@@ -6,3 +6,4 @@ libappindicator
 mornie
 precipitevolissimevolmente
 quoll
+subcommand
