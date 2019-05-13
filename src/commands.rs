@@ -5,7 +5,7 @@ use home::home_dir;
 use log::warn;
 
 const QUOLL_HOME: &str = ".quoll";
-const COMMAND_EXTENSIONS: [&str; 2] = ["svg", "png"];
+const ICON_EXTENSIONS: [&str; 2] = ["svg", "png"];
 
 /// A command can tell us to quit the application (Command::Quit) or to change
 /// the displayed icon using the associated String to find what we have to
@@ -27,7 +27,7 @@ impl Command {
                 home.push(QUOLL_HOME);
                 // Prevent directory traversal attack.
                 home.push(PathBuf::from(c).file_name()?.to_str()?);
-                for ext in &COMMAND_EXTENSIONS {
+                for ext in &ICON_EXTENSIONS {
                     home.set_extension(ext);
                     if home.exists() {
                         return Some(home);
