@@ -2,6 +2,7 @@ mod commands;
 mod gui;
 mod network;
 
+use std::process;
 use std::sync::{Arc, RwLock};
 use std::thread;
 
@@ -37,26 +38,48 @@ fn main() {
             SubCommand::with_name("serve")
                 .about("Starts UDP server for incoming commands"),
         )
+        .subcommand(
+            SubCommand::with_name("send")
+                .about("Send over UDP the specified command")
+                .arg(
+                    Arg::with_name("COMMAND")
+                        .help("The command to send")
+                        .required(true)
+                        .index(1),
+                ),
+        )
         .get_matches();
 
     let port = matches.value_of("port").unwrap_or(DEFAULT_PORT);
+    let address = format!("{}:{}", DEFAULT_HOST, port);
 
     if let Some(_) = matches.subcommand_matches("serve") {
         let command = Arc::new(RwLock::new(Command::from("black")));
 
         info!("Starting UDP server on port {}...", port);
-        let mut server = SimpleUDPServer::new(
-            format!("{}:{}", DEFAULT_HOST, port),
-            Arc::clone(&command),
-        );
+        let mut server =
+            SimpleUDPServer::new(address.clone(), Arc::clone(&command));
         thread::spawn(move || {
             if let Err(e) = server.serve_forever() {
                 error!("{}", e);
+                process::exit(1);
             };
         });
 
         info!("Starting GUI...");
         gui::start(command);
         info!("Exiting...");
+    }
+
+    if let Some(matches) = matches.subcommand_matches("send") {
+        // It's safe to unwrap because COMMAND is required.
+        let command = matches.value_of("COMMAND").unwrap();
+
+        info!("Sending command: {}", command);
+
+        if let Err(e) = network::send_to(command, address) {
+            error!("{}", e);
+            process::exit(1);
+        }
     }
 }

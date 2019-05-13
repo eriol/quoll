@@ -81,3 +81,10 @@ impl SimpleUDPServer {
         }
     }
 }
+
+/// Send over UDP the specified command to the specified address.
+pub fn send_to(command: &str, address: String) -> io::Result<usize> {
+    let socket = UdpSocket::bind("0.0.0.0:0")?;
+    let bytes = socket.send_to(command.as_bytes(), address)?;
+    Ok(bytes)
+}
