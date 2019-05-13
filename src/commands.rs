@@ -25,7 +25,8 @@ impl Command {
             Command::Custom(ref c) => {
                 let mut home = home_dir()?;
                 home.push(QUOLL_HOME);
-                home.push(c);
+                // Prevent directory traversal attack.
+                home.push(PathBuf::from(c).file_name()?.to_str()?);
                 for ext in &COMMAND_EXTENSIONS {
                     home.set_extension(ext);
                     if home.exists() {
