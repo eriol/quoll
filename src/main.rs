@@ -53,7 +53,7 @@ fn main() {
     let port = matches.value_of("port").unwrap_or(DEFAULT_PORT);
     let address = format!("{}:{}", DEFAULT_HOST, port);
 
-    if let Some(_) = matches.subcommand_matches("serve") {
+    if matches.subcommand_matches("serve").is_some() {
         let command = Arc::new(RwLock::new(Command::from("black")));
 
         info!("Starting UDP server on port {}...", port);
