@@ -67,7 +67,7 @@ fn main() {
         });
 
         info!("Starting GUI...");
-        gui::start(command);
+        gui::start(command, port);
         info!("Exiting...");
     }
 

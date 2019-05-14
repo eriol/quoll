@@ -17,8 +17,10 @@ fn create_indicator() -> AppIndicator {
     indicator
 }
 
-fn create_menu() -> gtk::Menu {
+fn create_menu(port: &str) -> gtk::Menu {
     let menu = gtk::Menu::new();
+    let label = gtk::MenuItem::new_with_label(&format!("UDP port: {}", port));
+    menu.append(&label);
     let quit: &CStr = unsafe { CStr::from_ptr(gtk_sys::GTK_STOCK_QUIT) };
     if let Ok(quit) = quit.to_str() {
         let menu_quit = gtk::ImageMenuItem::new_from_stock(quit, None);
@@ -31,9 +33,9 @@ fn create_menu() -> gtk::Menu {
     menu
 }
 
-fn build_ui(command: Arc<RwLock<Command>>) {
+fn build_ui(command: Arc<RwLock<Command>>, port: &str) {
     let mut indicator = create_indicator();
-    let mut menu = create_menu();
+    let mut menu = create_menu(port);
     indicator.set_menu(&mut menu);
     menu.show_all();
 
@@ -54,13 +56,13 @@ fn build_ui(command: Arc<RwLock<Command>>) {
     });
 }
 
-pub fn start(command: Arc<RwLock<Command>>) {
+pub fn start(command: Arc<RwLock<Command>>, port: &str) {
     if gtk::init().is_err() {
         error!("GTK initialization error.");
         process::exit(1);
     }
 
-    build_ui(command);
+    build_ui(command, port);
 
     gtk::main();
 }
