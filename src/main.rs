@@ -11,7 +11,7 @@ use log::{error, info};
 use pretty_env_logger;
 
 use commands::Command;
-use network::SimpleUDPServer;
+use network::udp::{send_to, Server};
 
 const ABOUT: &str = "
 Display custom icons on system tray.
@@ -57,8 +57,7 @@ fn main() {
         let command = Arc::new(RwLock::new(Command::from("black")));
 
         info!("Starting UDP server on port {}...", port);
-        let mut server =
-            SimpleUDPServer::new(address.clone(), Arc::clone(&command));
+        let mut server = Server::new(address.clone(), Arc::clone(&command));
         thread::spawn(move || {
             if let Err(e) = server.serve_forever() {
                 error!("{}", e);
@@ -77,7 +76,7 @@ fn main() {
 
         info!("Sending command: {}", command);
 
-        if let Err(e) = network::send_to(command, address) {
+        if let Err(e) = send_to(command, address) {
             error!("{}", e);
             process::exit(1);
         }
