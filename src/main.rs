@@ -1,4 +1,5 @@
 mod commands;
+mod config;
 mod gui;
 mod network;
 
@@ -35,8 +36,8 @@ fn main() {
                 .value_name("PORT"),
         )
         .subcommand(
-            SubCommand::with_name("serve")
-                .about("Starts UDP server for incoming commands"),
+            SubCommand::with_name("home")
+                .about("Displays the location of the quoll home folder"),
         )
         .subcommand(
             SubCommand::with_name("send")
@@ -48,37 +49,48 @@ fn main() {
                         .index(1),
                 ),
         )
+        .subcommand(
+            SubCommand::with_name("serve")
+                .about("Starts UDP server for incoming commands"),
+        )
         .get_matches();
 
     let port = matches.value_of("port").unwrap_or(DEFAULT_PORT);
     let address = format!("{}:{}", DEFAULT_HOST, port);
 
-    if matches.subcommand_matches("serve").is_some() {
-        let command = Arc::new(RwLock::new(Command::from("black")));
+    match matches.subcommand() {
+        ("home", _) => {
+            if let Some(home) = config::get_home() {
+                println!("{}", home.display());
+            }
+        }
+        ("send", Some(matches)) => {
+            // It's safe to unwrap COMMAND because it is required.
+            let command = matches.value_of("COMMAND").unwrap();
 
-        info!("Starting UDP server on port {}...", port);
-        let mut server = Server::new(address.clone(), Arc::clone(&command));
-        thread::spawn(move || {
-            if let Err(e) = server.serve_forever() {
+            info!("Sending command: {}", command);
+
+            if let Err(e) = send_to(command, address) {
                 error!("{}", e);
                 process::exit(1);
-            };
-        });
-
-        info!("Starting GUI...");
-        gui::start(command, port);
-        info!("Exiting...");
-    }
-
-    if let Some(matches) = matches.subcommand_matches("send") {
-        // It's safe to unwrap because COMMAND is required.
-        let command = matches.value_of("COMMAND").unwrap();
-
-        info!("Sending command: {}", command);
-
-        if let Err(e) = send_to(command, address) {
-            error!("{}", e);
-            process::exit(1);
+            }
         }
+        ("serve", _) => {
+            let command = Arc::new(RwLock::new(Command::from("black")));
+
+            info!("Starting UDP server on port {}...", port);
+            let mut server = Server::new(address, Arc::clone(&command));
+            thread::spawn(move || {
+                if let Err(e) = server.serve_forever() {
+                    error!("{}", e);
+                    process::exit(1);
+                };
+            });
+
+            info!("Starting GUI...");
+            gui::start(command, port);
+            info!("Exiting...");
+        }
+        _ => unreachable!(),
     }
 }

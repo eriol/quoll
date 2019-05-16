@@ -1,10 +1,10 @@
 use std::fmt;
 use std::path::PathBuf;
 
-use home::home_dir;
 use log::warn;
 
-const QUOLL_HOME: &str = ".quoll";
+use crate::config::get_home;
+
 const ICON_EXTENSIONS: [&str; 2] = ["svg", "png"];
 
 /// A command can tell us to quit the application (Command::Quit) or to change
@@ -23,8 +23,7 @@ impl Command {
         match self {
             Command::Quit => None,
             Command::Custom(ref c) => {
-                let mut home = home_dir()?;
-                home.push(QUOLL_HOME);
+                let mut home = get_home()?;
                 // Prevent directory traversal attack.
                 home.push(PathBuf::from(c).file_name()?.to_str()?);
                 for ext in &ICON_EXTENSIONS {
@@ -73,8 +72,7 @@ fn commands_creation() {
 fn commands_to_path() {
     assert_eq!(Command::from("quit").to_path(), None);
 
-    let mut home = home_dir().unwrap();
-    home.push(QUOLL_HOME);
+    let mut home = get_home().unwrap();
     home.push("eriol.png");
     assert_eq!(Command::from("eriol").to_path(), None);
 }
