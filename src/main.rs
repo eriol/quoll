@@ -78,6 +78,20 @@ fn main() {
         ("serve", _) => {
             let command = Arc::new(RwLock::new(Command::from("black")));
 
+            // Create directory to store resources if it does not exists.
+            if let Some(home) = config::get_home() {
+                if !home.is_dir() {
+                    info!(
+                        "Directory for resources not found, creating at: {}",
+                        home.display()
+                    );
+                    if let Err(e) = config::create_home() {
+                        error!("{}", e);
+                        process::exit(1);
+                    }
+                }
+            }
+
             info!("Starting UDP server on port {}...", port);
             let mut server = Server::new(address, Arc::clone(&command));
             thread::spawn(move || {
