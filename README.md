@@ -26,8 +26,8 @@ cargo install quoll
 ```
 
 Distribution of resources is not supported yet using cargo, so to get the base
-icons (as described by AnyBar) just download them and put in the directory
-where quoll will search for them:
+icons (as the ones included in AnyBar, but in SVG format) just download them
+and put in the directory where quoll will search for them:
 
 ```
 mkdir -p $(quoll home) && curl -s https://github.com/eriol/quoll/releases/download/0.1.0/base_resources.tar.gz | tar xzf - -C $(quoll home)
@@ -47,6 +47,8 @@ To send a message to change the icon use the `send` subcommand, for example:
 ```
 quoll send green
 ```
+
+The message is simply the icon name, without the extension.
 
 To list the icons currently available, and so the corresponding messages that
 we can send:
