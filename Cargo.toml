@@ -1,6 +1,6 @@
 [package]
 name = "quoll"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Daniele Tricoli <eriol@mornie.org>"]
 description = "Display custom icons on system tray"
 homepage = "https://github.com/eriol/quoll"
