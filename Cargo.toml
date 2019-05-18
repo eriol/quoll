@@ -6,7 +6,7 @@ description = "Display custom icons on system tray"
 homepage = "https://github.com/eriol/quoll"
 repository = "https://github.com/eriol/quoll"
 readme="README.md"
-license="GPL-3"
+license="GPL-3.0+"
 edition = "2018"
 
 [dependencies]
