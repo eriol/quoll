@@ -30,7 +30,7 @@ icons (as the ones included in AnyBar, but in SVG format) just download them
 and put in the directory where quoll will search for them:
 
 ```
-mkdir -p $(quoll home) && curl -s https://github.com/eriol/quoll/releases/download/0.1.0/base_resources.tar.gz | tar xzf - -C $(quoll home)
+mkdir -p $(quoll home) && curl -sL https://github.com/eriol/quoll/releases/download/0.1.0/base_resources.tar.gz | tar xzf - -C $(quoll home)
 ```
 
 ### Usage
