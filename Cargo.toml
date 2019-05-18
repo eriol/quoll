@@ -2,6 +2,11 @@
 name = "quoll"
 version = "0.1.0"
 authors = ["Daniele Tricoli <eriol@mornie.org>"]
+description = "Display custom icons on system tray"
+homepage = "https://github.com/eriol/quoll"
+repository = "https://github.com/eriol/quoll"
+readme="README.md"
+license="GPL-3"
 edition = "2018"
 
 [dependencies]
