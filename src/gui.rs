@@ -1,8 +1,7 @@
-use std::ffi::CStr;
 use std::process;
 use std::sync::{Arc, RwLock};
 
-use gtk::{MenuItemExt, MenuShellExt, WidgetExt};
+use gtk::prelude::*;
 use libappindicator::{AppIndicator, AppIndicatorStatus};
 use log::error;
 
@@ -12,23 +11,32 @@ const REFRESH_INTERVAL: u32 = 500;
 
 fn create_indicator() -> AppIndicator {
     let mut indicator = AppIndicator::new("quoll", "");
-    indicator.set_status(AppIndicatorStatus::APP_INDICATOR_STATUS_ACTIVE);
+    indicator.set_status(AppIndicatorStatus::Active);
 
     indicator
 }
 
 fn create_menu(port: &str) -> gtk::Menu {
     let menu = gtk::Menu::new();
-    let label = gtk::MenuItem::new_with_label(&format!("UDP port: {}", port));
-    menu.append(&label);
-    let quit: &CStr = unsafe { CStr::from_ptr(gtk_sys::GTK_STOCK_QUIT) };
-    if let Ok(quit) = quit.to_str() {
-        let menu_quit = gtk::ImageMenuItem::new_from_stock(quit, None);
-        menu_quit.connect_activate(|_| {
-            gtk::main_quit();
-        });
-        menu.append(&menu_quit);
-    }
+
+    let port = gtk::MenuItem::new_with_label(&format!("UDP port: {}", port));
+
+    let quit_item = gtk::MenuItem::new();
+    let quit_box = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+    let quit_image = gtk::Image::new_from_icon_name(
+        Some("application-exit"),
+        gtk::IconSize::Menu,
+    );
+    let quit_label = gtk::Label::new(Some("Quit"));
+    quit_box.pack_start(&quit_image, false, false, 0);
+    quit_box.pack_start(&quit_label, true, true, 0);
+    quit_item.add(&quit_box);
+    quit_item.connect_activate(|_| {
+        gtk::main_quit();
+    });
+
+    menu.append(&port);
+    menu.append(&quit_item);
 
     menu
 }
@@ -52,7 +60,7 @@ fn build_ui(command: Arc<RwLock<Command>>, port: &str) {
                 }
             }
         }
-        gtk::Continue(true)
+        Continue(true)
     });
 }
 
