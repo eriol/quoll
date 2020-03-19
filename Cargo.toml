@@ -12,7 +12,7 @@ edition = "2018"
 [dependencies]
 clap = "2.33.0"
 gtk = "0.8.1"
-home = "0.3.4"
+home = "0.5.3"
 libappindicator = "0.5.1"
 log = "0.4.6"
 pretty_env_logger = "0.3.0"
