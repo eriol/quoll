@@ -12,7 +12,7 @@ a clone with small differences.
 
 ### Installation
 
-quoll depends on `libappindicator3` and `gtk3`so in order to compile it you
+quoll depends on `libappindicator3` and `gtk3` so in order to compile it you
 have to install it first.
 On Debian (and derivatives):
 ```
