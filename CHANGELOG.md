@@ -1,3 +1,7 @@
+## 0.2.0 (2021-10-09)
+
+* Switch to Ayatana Application Indicators.
+
 ## 0.1.2 (2020-03-19)
 
 * Update the code to make use of new gtk stuff.
