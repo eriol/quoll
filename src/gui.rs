@@ -1,13 +1,14 @@
 use std::process;
 use std::sync::{Arc, RwLock};
+use std::time::Duration;
 
 use gtk::prelude::*;
-use libappindicator::{AppIndicator, AppIndicatorStatus};
+use libayatana_appindicator::{AppIndicator, AppIndicatorStatus};
 use log::error;
 
 use crate::commands::Command;
 
-const REFRESH_INTERVAL: u32 = 500;
+const REFRESH_INTERVAL: Duration = Duration::from_millis(500);
 
 fn create_indicator() -> AppIndicator {
     let mut indicator = AppIndicator::new("quoll", "");
@@ -19,11 +20,11 @@ fn create_indicator() -> AppIndicator {
 fn create_menu(port: &str) -> gtk::Menu {
     let menu = gtk::Menu::new();
 
-    let port = gtk::MenuItem::new_with_label(&format!("UDP port: {}", port));
+    let port = gtk::MenuItem::with_label(&format!("UDP port: {}", port));
 
     let quit_item = gtk::MenuItem::new();
     let quit_box = gtk::Box::new(gtk::Orientation::Horizontal, 0);
-    let quit_image = gtk::Image::new_from_icon_name(
+    let quit_image = gtk::Image::from_icon_name(
         Some("application-exit"),
         gtk::IconSize::Menu,
     );
@@ -47,7 +48,7 @@ fn build_ui(command: Arc<RwLock<Command>>, port: &str) {
     indicator.set_menu(&mut menu);
     menu.show_all();
 
-    gtk::timeout_add(REFRESH_INTERVAL, move || {
+    glib::timeout_add(REFRESH_INTERVAL, move || {
         if let Ok(command) = command.read() {
             match *command {
                 Command::Quit => gtk::main_quit(),

@@ -9,3 +9,5 @@ mornie
 precipitevolissimevolmente
 quoll
 subcommand
+libayatana
+appindicator
