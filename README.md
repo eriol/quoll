@@ -12,11 +12,11 @@ a clone with small differences.
 
 ### Installation
 
-quoll depends on `libappindicator3` and `gtk3` so in order to compile it you
-have to install it first.
+quoll depends on Ayatana Application Indicators `libayatana-appindicator3-1`
+and `gtk3` so in order to compile it you have to install them first.
 On Debian (and derivatives):
 ```
-sudo apt install libappindicator3-dev libgtk-3-dev
+sudo apt install libayatana-appindicator3-dev libgtk-3-dev
 ```
 
 Then simply do:
