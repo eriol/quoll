@@ -720,7 +720,6 @@ name = "quoll"
 version = "0.1.2"
 dependencies = [
  "clap",
- "glib 0.14.8",
  "gtk",
  "home",
  "libayatana-appindicator",
