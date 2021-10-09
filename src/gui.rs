@@ -2,6 +2,7 @@ use std::process;
 use std::sync::{Arc, RwLock};
 use std::time::Duration;
 
+use gtk::glib;
 use gtk::prelude::*;
 use libayatana_appindicator::{AppIndicator, AppIndicatorStatus};
 use log::error;
@@ -48,18 +49,25 @@ fn build_ui(command: Arc<RwLock<Command>>, port: &str) {
     indicator.set_menu(&mut menu);
     menu.show_all();
 
+    let (tx, rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
+
     glib::timeout_add(REFRESH_INTERVAL, move || {
         if let Ok(command) = command.read() {
             match *command {
                 Command::Quit => gtk::main_quit(),
                 Command::Custom(_) => {
                     if let Some(path) = command.to_path() {
-                        if let Some(path) = path.to_str() {
-                            indicator.set_icon_full(path, "icon");
-                        }
+                        let _ = tx.send(path.clone());
                     }
                 }
             }
+        }
+        Continue(true)
+    });
+
+    rx.attach(None, move |path| {
+        if let Some(path) = path.to_str() {
+            indicator.set_icon_full(path, "icon");
         }
         Continue(true)
     });
