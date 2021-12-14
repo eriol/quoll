@@ -57,7 +57,7 @@ fn build_ui(command: Arc<RwLock<Command>>, port: &str) {
                 Command::Quit => gtk::main_quit(),
                 Command::Custom(_) => {
                     if let Some(path) = command.to_path() {
-                        let _ = tx.send(path.clone());
+                        let _ = tx.send(path);
                     }
                 }
             }
